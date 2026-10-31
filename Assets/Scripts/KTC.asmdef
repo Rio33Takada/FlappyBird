@@ -1,7 +1,14 @@
 {
     "name": "KTC",
     "rootNamespace": "KTC",
-    "references": [],
+    "references": [
+        "GUID:121a88bd2a784684f857c16e9c36457e",
+        "GUID:bfc287b60273a07499d79039a2fd347f",
+        "GUID:79b30a733d6519f4ca99a3aff99f3a81",
+        "GUID:95f118f70db005a4b849784ae3483080",
+        "GUID:8686229ac2ef5254cb7770bf31c4d2fc",
+        "GUID:b6e5e7bee4218d44790c16378bcbb627"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
