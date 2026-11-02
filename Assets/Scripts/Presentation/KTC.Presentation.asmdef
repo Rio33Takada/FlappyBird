@@ -1,0 +1,16 @@
+{
+    "name": "KTC.Presentation",
+    "rootNamespace": "KTC.Presentation",
+    "references": [
+        "GUID:121a88bd2a784684f857c16e9c36457e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}
