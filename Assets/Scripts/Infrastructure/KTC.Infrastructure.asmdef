@@ -3,6 +3,7 @@
     "rootNamespace": "KTC.Infrastructure",
     "references": [
         "GUID:79b30a733d6519f4ca99a3aff99f3a81",
+        "GUID:121a88bd2a784684f857c16e9c36457e",
         "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
     "includePlatforms": [],

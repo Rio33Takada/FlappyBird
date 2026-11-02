@@ -45,8 +45,7 @@ namespace KTC.Presentation
                 return;
             }
 
-            // TODO: BirdModel‚Å‚ÌÀ‘•Œã‰ğœ.
-            //_model.Die();
+            _model.Die();
             _view.Die();
         }
 
