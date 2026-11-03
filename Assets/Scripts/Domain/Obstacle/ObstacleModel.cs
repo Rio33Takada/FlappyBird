@@ -2,27 +2,39 @@ using System;
 
 namespace KTC.Domain
 {
-    public abstract class ObstacleModel
+    public sealed class ObstacleModel
     {
-        private bool _isDestroyed;
+        private readonly IObstacleDestructionRule _destructionRule;
+
+        private bool _isDestroyed = false;
 
         public bool IsDestroyed => _isDestroyed;
 
-        public void ReceiveChargedAttack()
+        public ObstacleModel(IObstacleDestructionRule destructionRule)
+        {
+            if (destructionRule == null)
+            {
+                throw new ArgumentNullException(
+                    nameof(destructionRule));
+            }
+
+            _destructionRule = destructionRule;
+        }
+
+        public bool ReceiveChargedAttack()
         {
             if (_isDestroyed)
             {
-                return;
+                return false;
             }
 
-            OnChargedAttack();
-        }
+            if (!_destructionRule.CanDestroyByChargedAttack())
+            {
+                return false;
+            }
 
-        protected abstract void OnChargedAttack();
-
-        protected void Destroy()
-        {
             _isDestroyed = true;
+            return true;
         }
     }
 }

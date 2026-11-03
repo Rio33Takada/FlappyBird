@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -5,19 +6,61 @@ namespace KTC.Infrastructure
 {
     public sealed class ObstaclePool : MonoBehaviour, IObstaclePool
     {
-        [SerializeField]
-        private ObstacleInstaller _normalPrefab;
+        private const int OBJECTPOOL_DEFAULT_CAPACITY = 10;
 
-        [SerializeField]
-        private ObstacleInstaller _destructiblePrefab;
+        private const int OBJECTPOOL_MAX_SIZE = 30;
 
-        private ObjectPool<ObstacleInstaller> _normalPool;
-        private ObjectPool<ObstacleInstaller> _destructiblePool;
+        private readonly Dictionary<
+            ObstacleInstaller,
+            ObjectPool<ObstacleInstaller>> _pools =
+                new Dictionary<
+                    ObstacleInstaller,
+                    ObjectPool<ObstacleInstaller>>();
 
-        private void Awake()
+        private readonly Dictionary<
+            ObstacleInstaller,
+            ObjectPool<ObstacleInstaller>> _rentedObstacles =
+                new Dictionary<
+                    ObstacleInstaller,
+                    ObjectPool<ObstacleInstaller>>();
+
+        public ObstacleInstaller Get(ObstacleInstaller prefab)
         {
-            _normalPool = CreatePool(_normalPrefab);
-            _destructiblePool = CreatePool(_destructiblePrefab);
+            if (prefab == null)
+            {
+                return null;
+            }
+
+            ObjectPool<ObstacleInstaller> pool;
+
+            if (!_pools.TryGetValue(prefab, out pool))
+            {
+                pool = CreatePool(prefab);
+                _pools.Add(prefab, pool);
+            }
+
+            ObstacleInstaller obstacle = pool.Get();
+            _rentedObstacles.Add(obstacle, pool);
+
+            return obstacle;
+        }
+
+        public void Release(ObstacleInstaller obstacle)
+        {
+            if (obstacle == null)
+            {
+                return;
+            }
+
+            ObjectPool<ObstacleInstaller> pool;
+
+            if (!_rentedObstacles.TryGetValue(obstacle, out pool))
+            {
+                return;
+            }
+
+            _rentedObstacles.Remove(obstacle);
+            pool.Release(obstacle);
         }
 
         private ObjectPool<ObstacleInstaller> CreatePool(
@@ -25,32 +68,24 @@ namespace KTC.Infrastructure
         {
             return new ObjectPool<ObstacleInstaller>(
                 createFunc: () => Instantiate(prefab, transform),
-                actionOnGet: obstacle => obstacle.gameObject.SetActive(true),
+                actionOnGet: null,
                 actionOnRelease: obstacle => obstacle.Release(),
-                actionOnDestroy: obstacle => Destroy(obstacle.gameObject),
+                actionOnDestroy: obstacle =>
+                    Destroy(obstacle.gameObject),
                 collectionCheck: true,
-                defaultCapacity: 10,
-                maxSize: 30);
+                defaultCapacity: OBJECTPOOL_DEFAULT_CAPACITY,
+                maxSize: OBJECTPOOL_MAX_SIZE);
         }
 
-        public ObstacleInstaller GetNormal()
+        private void OnDestroy()
         {
-            return _normalPool.Get();
-        }
+            foreach (ObjectPool<ObstacleInstaller> pool in _pools.Values)
+            {
+                pool.Dispose();
+            }
 
-        public ObstacleInstaller GetDestructible()
-        {
-            return _destructiblePool.Get();
-        }
-
-        public void ReleaseNormal(ObstacleInstaller obstacle)
-        {
-            _normalPool.Release(obstacle);
-        }
-
-        public void ReleaseDestructible(ObstacleInstaller obstacle)
-        {
-            _destructiblePool.Release(obstacle);
+            _pools.Clear();
+            _rentedObstacles.Clear();
         }
     }
 }

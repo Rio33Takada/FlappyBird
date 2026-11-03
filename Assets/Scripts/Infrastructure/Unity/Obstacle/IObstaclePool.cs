@@ -4,7 +4,7 @@ namespace KTC.Infrastructure
 {
     public interface IObstaclePool
     {
-        void ReleaseNormal(ObstacleInstaller obstacle);
-        void ReleaseDestructible(ObstacleInstaller obstacle);
+        ObstacleInstaller Get(ObstacleInstaller prefab);
+        void Release(ObstacleInstaller obstacle);
     }
 }

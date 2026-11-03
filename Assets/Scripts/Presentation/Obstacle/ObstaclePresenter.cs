@@ -24,22 +24,30 @@ namespace KTC.Presentation
                     nameof(view));
             }
 
+            _model = model;
+            _view = view;
+
+            // TODO: OnLifetimeExpired を購読し、View の終了処理へ接続する。
             _view.OnChargedAttackDetected += HandleChargedAttack;
+            //_view.OnLifetimeExpired +=
         }
 
         private void HandleChargedAttack()
         {
-            _model.ReceiveChargedAttack();
+            bool isNewlyDestroyed = _model.ReceiveChargedAttack();
 
-            if (_model.IsDestroyed)
+            if (!isNewlyDestroyed)
             {
-                _view.Destruct();
+                return;
             }
+
+            _view.Destruct();
         }
 
 
         public void Dispose()
         {
+            // TODO: 寿命終了の購読を追加した際は、ここでも解除する。
             _view.OnChargedAttackDetected -= HandleChargedAttack;
         }
     }
