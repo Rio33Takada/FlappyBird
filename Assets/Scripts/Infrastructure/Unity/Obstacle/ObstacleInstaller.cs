@@ -34,6 +34,9 @@ namespace KTC.Infrastructure
 
             _ownerPool = ownerPool;
 
+            _view.ResetForReuse();
+            _view.OnTerminationCompleted += ReturnToPool;
+
             ObstacleModel model = new(destructionRule);
             _presenter = new ObstaclePresenter(model, _view);
 
@@ -69,6 +72,11 @@ namespace KTC.Infrastructure
 
         private void DisposePresenter()
         {
+            if(_view != null)
+            {
+                _view.OnTerminationCompleted -= ReturnToPool;
+            }
+
             _presenter?.Dispose();
             _presenter = null;
         }
