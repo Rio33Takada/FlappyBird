@@ -34,7 +34,7 @@ namespace KTC.Infrastructure
 
             _ownerPool = ownerPool;
 
-            ObstacleModel model = new ObstacleModel(destructionRule);
+            ObstacleModel model = new(destructionRule);
             _presenter = new ObstaclePresenter(model, _view);
 
             // TODO: 再利用時の演出・当たり判定・通過判定を初期化する。

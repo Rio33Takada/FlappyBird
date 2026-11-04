@@ -27,9 +27,8 @@ namespace KTC.Presentation
             _model = model;
             _view = view;
 
-            // TODO: OnLifetimeExpired を購読し、View の終了処理へ接続する。
+            _view.OnLifetimeExpired += HandleLifeTimeExpired;
             _view.OnChargedAttackDetected += HandleChargedAttack;
-            //_view.OnLifetimeExpired +=
         }
 
         private void HandleChargedAttack()
@@ -44,10 +43,15 @@ namespace KTC.Presentation
             _view.Destruct();
         }
 
+        private void HandleLifeTimeExpired()
+        {
+            _view.Expire();
+        }
+
 
         public void Dispose()
         {
-            // TODO: 寿命終了の購読を追加した際は、ここでも解除する。
+            _view.OnLifetimeExpired -= HandleLifeTimeExpired;
             _view.OnChargedAttackDetected -= HandleChargedAttack;
         }
     }
