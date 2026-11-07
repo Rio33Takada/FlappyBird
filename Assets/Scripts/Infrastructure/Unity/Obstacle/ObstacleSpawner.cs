@@ -14,6 +14,8 @@ namespace KTC.Infrastructure
         [SerializeField]
         private ObstaclePool _pool = null;
 
+        public StageSettings StageSettings => _stageSettings;
+
         public bool TrySpawn(
             ObstacleType type,
             Vector3 position,
