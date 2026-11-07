@@ -6,6 +6,9 @@ namespace KTC.Infrastructure
     public sealed class ObstacleSpawner : MonoBehaviour
     {
         [SerializeField]
+        private StageSettings _stageSettings = null;
+
+        [SerializeField]
         private ObstaclePrefabCatalog _catalog = null;
 
         [SerializeField]
@@ -18,7 +21,7 @@ namespace KTC.Infrastructure
         {
             obstacle = null;
 
-            if (_catalog == null || _pool == null)
+            if (_stageSettings == null || _catalog == null || _pool == null)
             {
                 return false;
             }
@@ -41,7 +44,7 @@ namespace KTC.Infrastructure
                 position,
                 Quaternion.identity);
 
-            if (!instance.Install(_pool))
+            if (!instance.Install(_pool, _stageSettings.WorldLimitX))
             {
                 _pool.Release(instance);
                 return false;

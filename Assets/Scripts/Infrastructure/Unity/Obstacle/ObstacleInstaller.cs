@@ -12,12 +12,18 @@ namespace KTC.Infrastructure
         [SerializeField]
         private ObstacleDestructionRuleFactory _ruleFactory = null;
 
+        [SerializeField]
+        private ObstacleLifetimeDetector _lifetimeDetector = null;
+
         private ObstaclePresenter _presenter = null;
         private IObstaclePool _ownerPool = null;
 
-        public bool Install(IObstaclePool ownerPool)
+        public bool Install(IObstaclePool ownerPool, float despawnX)
         {
-            if (_view == null || _ruleFactory == null || ownerPool == null)
+            if (_view == null ||
+                _ruleFactory == null ||
+                _lifetimeDetector == null ||
+                ownerPool == null)
             {
                 return false;
             }
@@ -39,6 +45,11 @@ namespace KTC.Infrastructure
 
             ObstacleModel model = new(destructionRule);
             _presenter = new ObstaclePresenter(model, _view);
+
+            _lifetimeDetector.OnLifetimeExpired +=
+                _view.NotifyLifetimeExpired;
+
+            _lifetimeDetector.Initialize(despawnX);
 
             // TODO: 再利用時の演出・当たり判定・通過判定を初期化する。
             return true;
@@ -72,7 +83,18 @@ namespace KTC.Infrastructure
 
         private void DisposePresenter()
         {
-            if(_view != null)
+            if (_lifetimeDetector != null)
+            {
+                _lifetimeDetector.StopMonitoring();
+
+                if (_view != null)
+                {
+                    _lifetimeDetector.OnLifetimeExpired -=
+                        _view.NotifyLifetimeExpired;
+                }
+            }
+
+            if (_view != null)
             {
                 _view.OnTerminationCompleted -= ReturnToPool;
             }
