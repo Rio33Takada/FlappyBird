@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7772064427924473286}
-  - component: {fileID: 2286382543060378743}
   - component: {fileID: 7412731250115805730}
   - component: {fileID: 9142079541925689403}
   - component: {fileID: 2206386129512951429}
@@ -37,19 +36,6 @@ Transform:
   - {fileID: 6182461882811426393}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2286382543060378743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2590811753122531380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db9c5984e5024e545a5713a767655c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: KTC.Infrastructure::KTC.Infrastructure.BirdInstaller
-  _birdPrefab: {fileID: 7412731250115805730}
 --- !u!114 &7412731250115805730
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,7 +77,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: df70fa95-8a34-4494-b137-73ab6b9c7d37
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!50 &2206386129512951429

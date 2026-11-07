@@ -16,4 +16,4 @@ MonoBehaviour:
   _obstacleGapRowCount: 2
   _obstacleRowSpacing: 1
   _destructibleGapFillPercent: 0
-  _worldLimitX: 14.6
+  _worldLimitX: -14.6

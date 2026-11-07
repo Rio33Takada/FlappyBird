@@ -3,7 +3,7 @@ using UnityEngine;
 namespace KTC.Infrastructure
 {
     [CreateAssetMenu(
-        fileName = "StageSetting",
+        fileName = "StageSettings",
         menuName = "KTC/Stage/StageSettings")]
     public sealed class StageSettings : ScriptableObject
     {
