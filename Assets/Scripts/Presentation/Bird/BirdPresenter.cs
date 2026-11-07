@@ -3,7 +3,7 @@ using KTC.Domain;
 
 namespace KTC.Presentation
 {
-    public class BirdPresenter : IDisposable
+    public sealed class BirdPresenter : IDisposable
     {
         private readonly BirdModel _model;
         private readonly IBirdView _view;
@@ -12,46 +12,63 @@ namespace KTC.Presentation
         {
             if (model == null)
             {
-                throw new ArgumentNullException(
-                    nameof(model));
+                throw new ArgumentNullException(nameof(model));
             }
 
             if (view == null)
             {
-                throw new ArgumentNullException(
-                    nameof(view));
+                throw new ArgumentNullException(nameof(view));
             }
 
             _model = model;
             _view = view;
 
-            _view.OnJumpRequested += HandleJump;
+            _view.OnPressed += _model.Press;
+            _view.OnReleased += HandleRelease;
+            _view.OnInputTimeUpdated += _model.UpdateHold;
+            _view.OnInputCanceled += _model.CancelInput;
+            _view.OnCollisionDetected += HandleCollision;
+            _view.OnAttackFinished += _model.FinishAttack;
+            _view.OnReturnFinished += _model.FinishReturn;
         }
 
-        private void HandleJump()
+        private void HandleRelease(double time)
         {
-            if (!_model.IsAlive)
-            {
-                return;
-            }
+            ApplyInputResult(_model.Release(time));
+        }
 
-            _view.Jump();
+        private void ApplyInputResult(BirdInputResult result)
+        {
+            switch (result)
+            {
+                case BirdInputResult.Jump:
+                    _view.Jump();
+                    break;
+
+                case BirdInputResult.ChargeAttack:
+                    _view.BeginChargeAttack();
+                    break;
+            }
         }
 
         private void HandleCollision()
         {
-            if (_model.IsAlive)
+            if (_model.TryDie())
             {
-                return;
+                _view.Die();
             }
-
-            _model.Die();
-            _view.Die();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _view.OnPressed -= _model.Press;
+            _view.OnReleased -= HandleRelease;
+            _view.OnInputTimeUpdated -= _model.UpdateHold;
+            _view.OnInputCanceled -= _model.CancelInput;
+            _view.OnCollisionDetected -= HandleCollision;
+            _view.OnAttackFinished -= _model.FinishAttack;
+            _view.OnReturnFinished -= _model.FinishReturn;
+            _model.CancelInput();
         }
     }
 }

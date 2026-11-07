@@ -14,15 +14,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Charge",
-                    "type": "Button",
-                    "id": "1067e412-b61a-4354-b406-71c8abd0b364",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -30,7 +21,7 @@
                     "name": "",
                     "id": "4e0c3fdf-0471-40da-9caa-9a5f86947430",
                     "path": "<Keyboard>/space",
-                    "interactions": "Tap",
+                    "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Jump",
@@ -41,32 +32,10 @@
                     "name": "",
                     "id": "55286604-e1c1-4737-8d36-cfaf48d6fae9",
                     "path": "<Touchscreen>/Press",
-                    "interactions": "Tap",
+                    "interactions": "",
                     "processors": "",
                     "groups": ";Touch",
                     "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3a2f5ab4-17e4-4f8c-8d8f-211807c8fb01",
-                    "path": "<Keyboard>/space",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "Charge",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0e669f17-8595-47f3-87d1-92a2533d350f",
-                    "path": "<Touchscreen>/Press",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": ";Touch",
-                    "action": "Charge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
