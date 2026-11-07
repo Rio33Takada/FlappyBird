@@ -1,0 +1,14 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fdd25c3e3dd74c4c80fbc7bea0bc152, type: 3}
+  m_Name: IndestructibleRuleFactory
+  m_EditorClassIdentifier: KTC.Infrastructure::KTC.Infrastructure.IndestructibleRuleFactory
