@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: KTC.Infrastructure::KTC.Infrastructure.BirdView
   _playerInput: {fileID: 9142079541925689403}
   _rigidbody2D: {fileID: 2206386129512951429}
+  _chargeProgressImage: {fileID: 7706380329625622690}
   _jumpSpeed: 5
   _dashSpeed: 8
   _dashSeconds: 0.2

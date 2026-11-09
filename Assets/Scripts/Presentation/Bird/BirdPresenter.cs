@@ -25,16 +25,30 @@ namespace KTC.Presentation
 
             _view.OnPressed += _model.Press;
             _view.OnReleased += HandleRelease;
-            _view.OnInputTimeUpdated += _model.UpdateHold;
-            _view.OnInputCanceled += _model.CancelInput;
+            _view.OnInputTimeUpdated += HandleInputTimeUpdated;
+            _view.OnInputCanceled += HandleInputCanceled;
             _view.OnCollisionDetected += HandleCollision;
             _view.OnAttackFinished += _model.FinishAttack;
             _view.OnReturnFinished += _model.FinishReturn;
         }
 
+        private void HandleInputTimeUpdated(double time)
+        {
+            _model.UpdateHold(time);
+            _view.SetChargeProgress(_model.ChargeProgress);
+        }
+
+        private void HandleInputCanceled()
+        {
+            _model.CancelInput();
+            _view.SetChargeProgress(_model.ChargeProgress);
+        }
+
         private void HandleRelease(double time)
         {
-            ApplyInputResult(_model.Release(time));
+            BirdInputResult result = _model.Release(time);
+            _view.SetChargeProgress(_model.ChargeProgress);
+            ApplyInputResult(result);
         }
 
         private void ApplyInputResult(BirdInputResult result)
@@ -55,6 +69,7 @@ namespace KTC.Presentation
         {
             if (_model.TryDie())
             {
+                _view.SetChargeProgress(_model.ChargeProgress);
                 _view.Die();
             }
         }
@@ -63,12 +78,12 @@ namespace KTC.Presentation
         {
             _view.OnPressed -= _model.Press;
             _view.OnReleased -= HandleRelease;
-            _view.OnInputTimeUpdated -= _model.UpdateHold;
-            _view.OnInputCanceled -= _model.CancelInput;
+            _view.OnInputTimeUpdated -= HandleInputTimeUpdated;
+            _view.OnInputCanceled -= HandleInputCanceled;
             _view.OnCollisionDetected -= HandleCollision;
             _view.OnAttackFinished -= _model.FinishAttack;
             _view.OnReturnFinished -= _model.FinishReturn;
-            _model.CancelInput();
+            HandleInputCanceled();
         }
     }
 }

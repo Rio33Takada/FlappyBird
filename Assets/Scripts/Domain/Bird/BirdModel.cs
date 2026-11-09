@@ -11,6 +11,7 @@ namespace KTC.Domain
         private bool _isReturning = false;
 
         public BirdState State { get; private set; } = BirdState.Ready;
+        public float ChargeProgress { get; private set; }
 
         public BirdModel(double chargeStartSeconds, double chargeAttackSeconds)
         {
@@ -54,6 +55,9 @@ namespace KTC.Domain
             }
 
             double heldSeconds = time - _pressedAt.Value;
+            ChargeProgress = (float)Math.Clamp(
+                (heldSeconds - _chargeStartSeconds) / (_chargeAttackSeconds - _chargeStartSeconds),
+                0d, 1d);
 
             if (heldSeconds >= _chargeAttackSeconds)
             {
@@ -92,6 +96,7 @@ namespace KTC.Domain
         public void CancelInput()
         {
             _pressedAt = null;
+            ChargeProgress = 0f;
 
             if (State == BirdState.Charging || State == BirdState.ChargeReady)
             {
@@ -128,6 +133,7 @@ namespace KTC.Domain
             }
 
             _pressedAt = null;
+            ChargeProgress = 0f;
             _isReturning = false;
             State = BirdState.Dead;
             return true;

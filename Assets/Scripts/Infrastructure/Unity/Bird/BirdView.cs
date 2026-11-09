@@ -12,6 +12,7 @@ namespace KTC.Infrastructure
 
         [SerializeField] private PlayerInput _playerInput = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
+        [SerializeField] private UnityEngine.UI.Image _chargeProgressImage = null;
         [SerializeField, Min(0.01f)] private float _jumpSpeed = 5f;
         [SerializeField, Min(0.01f)] private float _dashSpeed = 8f;
         [SerializeField, Min(0.01f)] private float _dashSeconds = 0.2f;
@@ -103,6 +104,14 @@ namespace KTC.Infrastructure
                 _flightAction.IsPressed())
             {
                 OnInputTimeUpdated?.Invoke(Time.realtimeSinceStartupAsDouble);
+            }
+        }
+
+        public void SetChargeProgress(float progress)
+        {
+            if (_chargeProgressImage != null)
+            {
+                _chargeProgressImage.fillAmount = progress;
             }
         }
 

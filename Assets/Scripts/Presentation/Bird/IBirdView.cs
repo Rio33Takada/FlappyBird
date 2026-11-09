@@ -12,6 +12,7 @@ namespace KTC.Presentation
         event Action OnAttackFinished;
         event Action OnReturnFinished;
 
+        void SetChargeProgress(float progress);
         void Jump();
         void BeginChargeAttack();
         void Die();
