@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e8fc3fa737d9784699fd421fe7aaedc, type: 3}
   m_Name: ObstaclePrefabCatalog
   m_EditorClassIdentifier: KTC.Infrastructure::KTC.Infrastructure.ObstaclePrefabCatalog
-  _entries: []
+  _entries:
+  - _type: 0
+    _prefab: {fileID: 2145602568332615550, guid: 63e2ca6795804ee43bf9bc1838f31f62, type: 3}
+  - _type: 1
+    _prefab: {fileID: -7480174228027282559, guid: 15d94af416a8e0e42be474eec2bba2a0, type: 3}
