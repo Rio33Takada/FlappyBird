@@ -20,6 +20,7 @@ namespace KTC.Presentation
 
         public GameCyclePresenter()
         {
+            // TODO: Model・鳥・ステージを受け取ってフィールドに保持し、開始入力・死亡・列通過の通知を購読する。
             
         }
 
@@ -32,27 +33,32 @@ namespace KTC.Presentation
 
             if (_model.TryStart())
             {
+                // TODO: 鳥を飛行状態にして初回ジャンプを行い、障害物の生成・移動を開始して状態を通知する。
 
             }
         }
 
         private void HandleColumnPassed(int columnId)
         {
+            // TODO: TryScoreColumn が成功したら、更新後のスコアを通知する。
 
         }
 
         private void HandleBirdDied()
         {
+            // TODO: TryEnd が成功したら障害物の生成・移動を止め、状態を通知する。
 
         }
 
         public void RequestRetry()
         {
+            // TODO: TryPrepareNextRun が成功したら障害物を返却し、鳥を初期位置へ戻して状態とスコアを通知する。
 
         }
 
         public void Dispose()
         {
+            // TODO: コンストラクターで登録した開始入力・死亡・列通過の購読を解除する。
 
         }
     }

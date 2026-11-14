@@ -40,6 +40,8 @@ namespace KTC.Infrastructure
             birdView.Initialize();
 
             _presenter = new BirdPresenter(model, birdView);
+            // TODO: 生成直後は開始待ちにし、StartFlight の呼び出しをゲーム開始時へ移す。
+            // TODO: 組み立てた鳥の IGameCycleBird を GameSceneInstaller に渡せるようにする。
             model.StartFlight();
         }
 

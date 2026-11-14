@@ -23,6 +23,7 @@ namespace KTC.Presentation
             _model = model;
             _view = view;
 
+            // TODO: 開始待ちの押下をゲームサイクルに通知し、その押下とリリースを通常の飛行入力から除外する。
             _view.OnPressed += _model.Press;
             _view.OnReleased += HandleRelease;
             _view.OnInputTimeUpdated += HandleInputTimeUpdated;
@@ -71,6 +72,7 @@ namespace KTC.Presentation
             {
                 _view.SetChargeProgress(_model.ChargeProgress);
                 _view.Die();
+                // TODO: 死亡確定後、ゲームサイクルに死亡を通知する。
             }
         }
 

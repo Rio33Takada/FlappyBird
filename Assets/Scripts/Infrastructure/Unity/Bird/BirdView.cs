@@ -35,6 +35,8 @@ namespace KTC.Infrastructure
 
         public void Initialize()
         {
+            // TODO: 開始待ち中は Rigidbody2D のシミュレーションを止め、開始時に再開する。
+            // TODO: リトライで同じ鳥を使う場合は、初期位置・速度・重力・ダッシュ状態を復元できるようにする。
             if (_rigidbody2D != null)
             {
                 _homeX = _rigidbody2D.position.x;
