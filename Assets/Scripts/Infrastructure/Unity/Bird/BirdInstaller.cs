@@ -20,7 +20,7 @@ namespace KTC.Infrastructure
 
         private BirdPresenter _presenter = null;
 
-        private void Awake()
+        public void Install()
         {
             if (_birdPrefab == null)
             {
@@ -36,6 +36,8 @@ namespace KTC.Infrastructure
                 _birdPrefab,
                 spawnPosition,
                 _birdPrefab.transform.rotation);
+
+            birdView.Initialize();
 
             _presenter = new BirdPresenter(model, birdView);
             model.StartFlight();

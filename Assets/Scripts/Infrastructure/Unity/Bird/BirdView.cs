@@ -33,7 +33,7 @@ namespace KTC.Infrastructure
         public event Action OnAttackFinished;
         public event Action OnReturnFinished;
 
-        private void Awake()
+        public void Initialize()
         {
             if (_rigidbody2D != null)
             {
