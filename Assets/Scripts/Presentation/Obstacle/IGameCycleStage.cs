@@ -6,13 +6,14 @@ namespace KTC.Presentation
     {
         void SpawnObstacleColumn();
 
-        void StartMoving();
+        void StartRunning();
 
-        void StopMoving();
+        void StopRunning();
+
+        void Reset();
+
+        bool IsOutsideVerticalBounds(float positionY);
 
         event Action<int> OnPassedColumn;
-
-        // TODO: 生成の開始・停止およびリトライ時のリセットの契約を定義する。
-
     }
 }

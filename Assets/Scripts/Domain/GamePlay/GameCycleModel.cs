@@ -60,6 +60,7 @@ namespace KTC.Domain
 
             _score = 0;
             _scoredColumnIds.Clear();
+            State = GameCycleState.Ready;
             return true;
         }
     }

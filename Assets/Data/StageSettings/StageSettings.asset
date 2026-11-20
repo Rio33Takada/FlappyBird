@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eba9b62bdc554244eac2c621b97a6fe8, type: 3}
   m_Name: StageSettings
   m_EditorClassIdentifier: KTC.Infrastructure::KTC.Infrastructure.StageSettings
-  _obstacleRowCount: 8
-  _obstacleGapRowCount: 2
+  _obstacleRowCount: 11
+  _obstacleGapRowCount: 3
   _obstacleRowSpacing: 1
-  _destructibleGapFillPercent: 0
+  _destructibleGapFillPercent: 50
   _worldLimitX: -14.6
