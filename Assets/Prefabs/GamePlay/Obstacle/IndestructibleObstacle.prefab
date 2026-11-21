@@ -64,6 +64,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: KTC.Infrastructure::KTC.Infrastructure.ObstacleView
   _colliders: []
+  _spriteRenderers: []
+  _fadeSeconds: 0.25
 --- !u!114 &7550499616507857230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,8 +151,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3.125, y: 3.125, z: 3.125}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7197114904157714700}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -203,7 +205,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 640835498, guid: ed9e32fd1bc536045920cc76f3079d24, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
