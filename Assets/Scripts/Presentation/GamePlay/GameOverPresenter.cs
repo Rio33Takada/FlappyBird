@@ -10,8 +10,18 @@ namespace KTC.Presentation
 
         public GameOverPresenter(GameCyclePresenter cycle, IGameOverView view)
         {
-            _cycle = cycle ?? throw new ArgumentNullException(nameof(cycle));
-            _view = view ?? throw new ArgumentNullException(nameof(view));
+            if (cycle == null)
+            {
+                throw new ArgumentNullException(nameof(cycle));
+            }
+
+            if (view == null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            _cycle = cycle;
+            _view = view;
 
             _cycle.StateChanged += HandleStateChanged;
             _cycle.ScoreChanged += _view.SetScore;

@@ -13,6 +13,7 @@ namespace KTC.Infrastructure
 
         [SerializeField] private PlayerInput _playerInput = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
+        [SerializeField] private BirdAnimationView _animationView = null;
         [SerializeField] private UnityEngine.UI.Image _chargeProgressImage = null;
         [SerializeField, Min(0.01f)] private float _jumpSpeed = 5f;
         [SerializeField, Min(0.01f)] private float _dashSpeed = 8f;
@@ -40,6 +41,7 @@ namespace KTC.Infrastructure
         public void SetState(BirdState state)
         {
             State = state;
+            _animationView?.SetState(state);
         }
 
         public event Action<double> OnPressed;
@@ -85,6 +87,7 @@ namespace KTC.Infrastructure
             _isReturning = false;
             _dashRemaining = 0f;
             SetChargeProgress(0f);
+            _animationView?.ResetForRun();
 
             transform.SetPositionAndRotation(_initialPosition, _initialRotation);
             if (_rigidbody2D != null)
@@ -169,10 +172,14 @@ namespace KTC.Infrastructure
             {
                 _chargeProgressImage.fillAmount = progress;
             }
+
+            _animationView?.SetChargeProgress(progress);
         }
 
         public void Jump()
         {
+            _animationView?.PlayJump(State);
+
             if (_rigidbody2D != null)
             {
                 Vector2 velocity = _rigidbody2D.linearVelocity;
