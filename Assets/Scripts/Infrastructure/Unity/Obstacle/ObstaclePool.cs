@@ -10,6 +10,9 @@ namespace KTC.Infrastructure
 
         private const int OBJECTPOOL_MAX_SIZE = 30;
 
+        [SerializeField]
+        private Transform _inactiveRoot = null;
+
         private readonly Dictionary<
             ObstacleInstaller,
             ObjectPool<ObstacleInstaller>> _pools =
@@ -26,7 +29,8 @@ namespace KTC.Infrastructure
 
         public ObstacleInstaller Get(ObstacleInstaller prefab)
         {
-            if (prefab == null)
+            if (prefab == null || _inactiveRoot == null ||
+                _inactiveRoot.gameObject.activeInHierarchy)
             {
                 return null;
             }
@@ -67,7 +71,13 @@ namespace KTC.Infrastructure
             ObstacleInstaller prefab)
         {
             return new ObjectPool<ObstacleInstaller>(
-                createFunc: () => Instantiate(prefab, transform),
+                createFunc: () =>
+                {
+                    ObstacleInstaller obstacle = Instantiate(prefab, _inactiveRoot);
+                    obstacle.gameObject.SetActive(false);
+                    obstacle.transform.SetParent(transform, false);
+                    return obstacle;
+                },
                 actionOnGet: null,
                 actionOnRelease: obstacle => obstacle.Release(),
                 actionOnDestroy: obstacle =>

@@ -1,4 +1,5 @@
 using KTC.Presentation;
+using KTC.Domain;
 using UnityEngine;
 
 namespace KTC.Infrastructure
@@ -8,19 +9,40 @@ namespace KTC.Infrastructure
         [SerializeField]
         private BirdInstaller _birdInstaller = null;
 
+        [SerializeField]
+        private ObstacleStage _obstacleStage = null;
+
+        [SerializeField]
+        private GameOverView _gameOverView = null;
+
         private GameCyclePresenter _presenter = null;
+        private GameOverPresenter _gameOverPresenter = null;
 
         private void Start()
         {
-            if (_birdInstaller == null)
+            if (_birdInstaller == null || _obstacleStage == null)
             {
                 return;
             }
 
             _birdInstaller.Install();
-            // TODO: 鳥の組み立て結果と Inspector で受け取るステージ参照を null チェックし、Model と Presenter を生成して接続する。
+            if (_birdInstaller.Bird == null)
+            {
+                return;
+            }
 
-            
+            _presenter = new GameCyclePresenter(
+                new GameCycleModel(), _birdInstaller.Bird, _obstacleStage);
+
+            if (_gameOverView != null)
+            {
+                _gameOverPresenter = new GameOverPresenter(_presenter, _gameOverView);
+            }
+        }
+
+        private void LateUpdate()
+        {
+            _presenter?.CheckBirdBounds();
         }
 
         public void RequestRetry()
@@ -30,7 +52,10 @@ namespace KTC.Infrastructure
 
         public void OnDestroy()
         {
+            _gameOverPresenter?.Dispose();
+            _gameOverPresenter = null;
             _presenter?.Dispose();
+            _presenter = null;
         }
     }
 }

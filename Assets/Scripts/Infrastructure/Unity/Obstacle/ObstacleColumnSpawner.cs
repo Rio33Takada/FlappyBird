@@ -9,8 +9,12 @@ namespace KTC.Infrastructure
         [SerializeField]
         private ObstacleSpawner _tileSpawner = null;
 
-        public bool TrySpawnColumn(Vector3 bottomPosition)
+        public bool TrySpawnColumn(
+            Vector3 bottomPosition,
+            out IReadOnlyList<ObstacleInstaller> spawnedTiles)
         {
+            spawnedTiles = null;
+
             if (_tileSpawner == null || _tileSpawner.StageSettings == null)
             {
                 return false;
@@ -21,13 +25,12 @@ namespace KTC.Infrastructure
             int gapRowCount = settings.ObstacleGapRowCount;
             float rowSpacing = settings.ObstacleRowSpacing;
 
-            if (gapRowCount < 1 || gapRowCount >= rowCount || rowSpacing <= 0)
+            if (rowCount < 3 || gapRowCount < 1 || gapRowCount > rowCount - 2 || rowSpacing <= 0)
             {
                 return false;
             }
 
-            // TODO: ’[‚Ü‚ÅŒŠ‚É‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é.
-            int gapStartRow = Random.Range(0, rowCount - gapRowCount + 1);
+            int gapStartRow = Random.Range(1, rowCount - gapRowCount);
             int gapEndExclusive = gapStartRow + gapRowCount;
 
             bool shouldFillGap =
@@ -35,7 +38,7 @@ namespace KTC.Infrastructure
 
             int tileCount = shouldFillGap ? rowCount : rowCount - gapRowCount;
 
-            List<ObstacleInstaller> spawnedTiles = new(tileCount);
+            List<ObstacleInstaller> columnTiles = new(tileCount);
 
             for (int row = 0; row < rowCount; row++)
             {
@@ -55,7 +58,7 @@ namespace KTC.Infrastructure
 
                 if (!_tileSpawner.TrySpawn(type, position, out ObstacleInstaller tile))
                 {
-                    foreach (ObstacleInstaller spawnedTile in spawnedTiles)
+                    foreach (ObstacleInstaller spawnedTile in columnTiles)
                     {
                         spawnedTile.ReturnToPool();
                     }
@@ -63,9 +66,10 @@ namespace KTC.Infrastructure
                     return false;
                 }
 
-                spawnedTiles.Add(tile);
+                columnTiles.Add(tile);
             }
 
+            spawnedTiles = columnTiles;
             return true;
         }
     }
