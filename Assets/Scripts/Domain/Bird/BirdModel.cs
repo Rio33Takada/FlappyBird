@@ -13,6 +13,8 @@ namespace KTC.Domain
         public BirdState State { get; private set; } = BirdState.Ready;
         public float ChargeProgress { get; private set; }
 
+        public event Action<BirdState> StateChanged;
+
         public BirdModel(double chargeStartSeconds, double chargeAttackSeconds)
         {
             if (!double.IsFinite(chargeStartSeconds) || chargeStartSeconds <= 0d)
@@ -30,11 +32,18 @@ namespace KTC.Domain
             _chargeAttackSeconds = chargeAttackSeconds;
         }
 
+        public void Reset()
+        {
+            ClearInput();
+            _isReturning = false;
+            ChangeState(BirdState.Ready);
+        }
+
         public void StartFlight()
         {
             if (State == BirdState.Ready)
             {
-                State = BirdState.Normal;
+                ChangeState(BirdState.Normal);
             }
         }
 
@@ -61,13 +70,13 @@ namespace KTC.Domain
 
             if (heldSeconds >= _chargeAttackSeconds)
             {
-                State = BirdState.ChargeReady;
+                ChangeState(BirdState.ChargeReady);
                 return;
             }
 
             if (heldSeconds >= _chargeStartSeconds)
             {
-                State = BirdState.Charging;
+                ChangeState(BirdState.Charging);
             }
         }
 
@@ -79,14 +88,15 @@ namespace KTC.Domain
             }
 
             double heldSeconds = time - _pressedAt.Value;
-            CancelInput();
-
             if (heldSeconds >= _chargeAttackSeconds)
             {
+                ClearInput();
                 _isReturning = false;
-                State = BirdState.ChargeAttacking;
+                ChangeState(BirdState.ChargeAttacking);
                 return BirdInputResult.ChargeAttack;
             }
+
+            CancelInput();
 
             return heldSeconds < _chargeStartSeconds
                 ? BirdInputResult.Jump
@@ -95,12 +105,11 @@ namespace KTC.Domain
 
         public void CancelInput()
         {
-            _pressedAt = null;
-            ChargeProgress = 0f;
+            ClearInput();
 
             if (State == BirdState.Charging || State == BirdState.ChargeReady)
             {
-                State = _isReturning ? BirdState.Returning : BirdState.Normal;
+                ChangeState(_isReturning ? BirdState.Returning : BirdState.Normal);
             }
         }
 
@@ -112,7 +121,7 @@ namespace KTC.Domain
             }
 
             _isReturning = true;
-            State = BirdState.Returning;
+            ChangeState(BirdState.Returning);
         }
 
         public void FinishReturn()
@@ -121,8 +130,13 @@ namespace KTC.Domain
 
             if (State == BirdState.Returning)
             {
-                State = BirdState.Normal;
+                ChangeState(BirdState.Normal);
             }
+        }
+
+        public bool TryDieByCollision()
+        {
+            return State != BirdState.ChargeAttacking && TryDie();
         }
 
         public bool TryDie()
@@ -132,11 +146,27 @@ namespace KTC.Domain
                 return false;
             }
 
+            ClearInput();
+            _isReturning = false;
+            ChangeState(BirdState.Dead);
+            return true;
+        }
+
+        private void ClearInput()
+        {
             _pressedAt = null;
             ChargeProgress = 0f;
-            _isReturning = false;
-            State = BirdState.Dead;
-            return true;
+        }
+
+        private void ChangeState(BirdState state)
+        {
+            if (State == state)
+            {
+                return;
+            }
+
+            State = state;
+            StateChanged?.Invoke(state);
         }
     }
 }

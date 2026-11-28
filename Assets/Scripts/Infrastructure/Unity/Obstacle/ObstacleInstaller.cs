@@ -1,5 +1,6 @@
 using KTC.Domain;
 using KTC.Presentation;
+using System;
 using UnityEngine;
 
 namespace KTC.Infrastructure
@@ -17,6 +18,8 @@ namespace KTC.Infrastructure
 
         private ObstaclePresenter _presenter = null;
         private IObstaclePool _ownerPool = null;
+
+        public event Action<ObstacleInstaller> OnReturnedToPool;
 
         public bool Install(IObstaclePool ownerPool, float despawnX)
         {
@@ -51,7 +54,6 @@ namespace KTC.Infrastructure
 
             _lifetimeDetector.Initialize(despawnX);
 
-            // TODO: 再利用時の演出・当たり判定・通過判定を初期化する。
             return true;
         }
 
@@ -73,12 +75,19 @@ namespace KTC.Infrastructure
             _ownerPool = null;
             DisposePresenter();
 
+            OnReturnedToPool?.Invoke(this);
             gameObject.SetActive(false);
         }
 
         private void OnDestroy()
         {
+            bool wasInstalled = _presenter != null;
             DisposePresenter();
+
+            if (wasInstalled)
+            {
+                OnReturnedToPool?.Invoke(this);
+            }
         }
 
         private void DisposePresenter()

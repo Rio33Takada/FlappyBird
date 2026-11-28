@@ -9,7 +9,7 @@ namespace KTC.Infrastructure
     {
         public const int PERCENT_SCALE = 100;
 
-        [SerializeField, Min(2)]
+        [SerializeField, Min(3)]
         private int _obstacleRowCount = 8;
 
         [SerializeField, Min(1)]

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using KTC.Presentation;
+using KTC.Domain;
 
 namespace KTC.Infrastructure
 {
@@ -12,6 +13,7 @@ namespace KTC.Infrastructure
 
         [SerializeField] private PlayerInput _playerInput = null;
         [SerializeField] private Rigidbody2D _rigidbody2D = null;
+        [SerializeField] private BirdAnimationView _animationView = null;
         [SerializeField] private UnityEngine.UI.Image _chargeProgressImage = null;
         [SerializeField, Min(0.01f)] private float _jumpSpeed = 5f;
         [SerializeField, Min(0.01f)] private float _dashSpeed = 8f;
@@ -19,11 +21,28 @@ namespace KTC.Infrastructure
         [SerializeField, Min(0.01f)] private float _returnSpeed = 4f;
 
         private InputAction _flightAction = null;
+        private bool _isInitialized = false;
+        private Vector3 _initialPosition;
+        private Quaternion _initialRotation;
+        private Vector2 _initialVelocity;
+        private float _initialAngularVelocity = 0f;
         private float _homeX = 0f;
         private float _normalGravityScale = 0f;
         private float _dashRemaining = 0f;
         private bool _isDashing = false;
         private bool _isReturning = false;
+
+        public float PositionY => _rigidbody2D != null
+            ? _rigidbody2D.position.y
+            : transform.position.y;
+
+        public BirdState State { get; private set; } = BirdState.Ready;
+
+        public void SetState(BirdState state)
+        {
+            State = state;
+            _animationView?.SetState(state);
+        }
 
         public event Action<double> OnPressed;
         public event Action<double> OnReleased;
@@ -35,12 +54,50 @@ namespace KTC.Infrastructure
 
         public void Initialize()
         {
-            // TODO: 開始待ち中は Rigidbody2D のシミュレーションを止め、開始時に再開する。
-            // TODO: リトライで同じ鳥を使う場合は、初期位置・速度・重力・ダッシュ状態を復元できるようにする。
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            _initialPosition = transform.position;
+            _initialRotation = transform.rotation;
             if (_rigidbody2D != null)
             {
                 _homeX = _rigidbody2D.position.x;
                 _normalGravityScale = _rigidbody2D.gravityScale;
+                _initialVelocity = _rigidbody2D.linearVelocity;
+                _initialAngularVelocity = _rigidbody2D.angularVelocity;
+            }
+
+            _isInitialized = true;
+            ResetForRun();
+        }
+
+        public void StartFlight()
+        {
+            if (_rigidbody2D != null)
+            {
+                _rigidbody2D.simulated = true;
+            }
+        }
+
+        public void ResetForRun()
+        {
+            _isDashing = false;
+            _isReturning = false;
+            _dashRemaining = 0f;
+            SetChargeProgress(0f);
+            _animationView?.ResetForRun();
+
+            transform.SetPositionAndRotation(_initialPosition, _initialRotation);
+            if (_rigidbody2D != null)
+            {
+                _rigidbody2D.simulated = false;
+                _rigidbody2D.position = _initialPosition;
+                _rigidbody2D.rotation = _initialRotation.eulerAngles.z;
+                _rigidbody2D.linearVelocity = _initialVelocity;
+                _rigidbody2D.angularVelocity = _initialAngularVelocity;
+                _rigidbody2D.gravityScale = _normalGravityScale;
             }
         }
 
@@ -115,10 +172,14 @@ namespace KTC.Infrastructure
             {
                 _chargeProgressImage.fillAmount = progress;
             }
+
+            _animationView?.SetChargeProgress(progress);
         }
 
         public void Jump()
         {
+            _animationView?.PlayJump(State);
+
             if (_rigidbody2D != null)
             {
                 Vector2 velocity = _rigidbody2D.linearVelocity;
@@ -198,6 +259,11 @@ namespace KTC.Infrastructure
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
+        {
+            OnCollisionDetected?.Invoke();
+        }
+
+        private void OnCollisionStay2D(Collision2D collision)
         {
             OnCollisionDetected?.Invoke();
         }

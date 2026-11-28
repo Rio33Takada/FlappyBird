@@ -42,8 +42,18 @@ namespace KTC.Presentation
             _bird = bird;
             _stage = stage;
 
-            // TODO: 開始入力・死亡の通知を購読する。
+            _bird.OnStart += HandleStartRequested;
+            _bird.OnDeath += HandleBirdDied;
             _stage.OnPassedColumn += HandlePassedColumn;
+        }
+
+        public void CheckBirdBounds()
+        {
+            if (State == GameCycleState.Playing &&
+                _stage.IsOutsideVerticalBounds(_bird.PositionY))
+            {
+                _bird.Die();
+            }
         }
 
         private void HandleStartRequested()
@@ -57,8 +67,10 @@ namespace KTC.Presentation
             {
                 return;
             }
-            // TODO: 鳥を飛行状態にして初回ジャンプを行い、障害物の生成・移動を開始して状態を通知する。
-
+            _bird.InitialJumpInput();
+            _stage.SpawnObstacleColumn();
+            _stage.StartRunning();
+            StateChanged?.Invoke(State);
         }
 
         private void HandlePassedColumn(int columnId)
@@ -88,14 +100,13 @@ namespace KTC.Presentation
                 return;
             }
 
-            _stage.StopMoving();
+            _stage.StopRunning();
 
             StateChanged?.Invoke(State);
         }
 
         public void RequestRetry()
         {
-            // TODO: TryPrepareNextRun が成功したら障害物を返却し、鳥を初期位置へ戻して状態とスコアを通知する。
             if (_model == null || _bird == null)
             {
                 return;
@@ -106,13 +117,17 @@ namespace KTC.Presentation
                 return;
             }
 
+            _stage.Reset();
             _bird.Reset();
+            StateChanged?.Invoke(State);
+            ScoreChanged?.Invoke(Score);
         }
 
         public void Dispose()
         {
-            // TODO: コンストラクターで登録した開始入力・死亡・列通過の購読を解除する。
-
+            _bird.OnStart -= HandleStartRequested;
+            _bird.OnDeath -= HandleBirdDied;
+            _stage.OnPassedColumn -= HandlePassedColumn;
         }
     }
 }
